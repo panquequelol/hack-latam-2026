@@ -1,0 +1,22 @@
+@import "tailwindcss";
+@import "@fontsource-variable/ibm-plex-sans";
+@import "@fontsource-variable/ibm-plex-sans/wght-italic.css";
+
+@font-face {
+  font-family: "Flor De Ruina Semilla";
+  src: url("/FlorDeRuina-Semilla.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-hack-white: #FAF6F1;
+  --color-hack-black: #181818;
+  --color-hack-gray: #DBD4CF;
+  --color-hack-orange: #FF764D;
+  --color-hack-green: #6BCB77;
+  --color-hack-blue: #5B9BD5;
+  --font-sans: "IBM Plex Sans Variable", sans-serif;
+  --font-display: "Flor De Ruina Semilla", serif;
+}

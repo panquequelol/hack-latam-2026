@@ -1,17 +1,612 @@
 ---
+import "../styles/global.css";
+import backgroundVideo from "../assets/background.mp4";
+import locationMovieMp4 from "../assets/locations/optimized/location_movie-loop.mp4";
+import locationMoviePoster from "../assets/locations/optimized/location_movie-poster.jpg";
+import location1779233228417 from "../assets/locations/optimized/1779233228417.avif";
+import locationGuate from "../assets/locations/optimized/guate.avif";
+import locationIMG5201 from "../assets/locations/optimized/IMG_5201.avif";
+import locationIMG8898 from "../assets/locations/optimized/IMG_8898.avif";
+import locationElSalvador from "../assets/locations/optimized/el_salvador.avif";
+import locationWhatsApp0515 from "../assets/locations/optimized/WhatsApp Image 2026-05-15 at 8.10.43 PM.avif";
+import locationWhatsApp2056 from "../assets/locations/optimized/WhatsApp Image 2026-05-20 at 20.48.56.avif";
+import locationWhatsApp2057 from "../assets/locations/optimized/WhatsApp Image 2026-05-20 at 20.48.57.avif";
+import debriNetBuilding from "../assets/debri-net-building.jpeg";
+import mistralLogo from "../assets/sponsors/mistral-logo-color-white.svg";
+import makeLogo from "../assets/sponsors/make-text.png";
 
+const sponsorImages = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/sponsors/*.{png,svg,jpeg,jpg}",
+  { eager: true },
+);
+
+const getSponsorFileName = (path: string) => path.split("/").pop() ?? path;
+
+const getSponsorAlt = (filename: string) =>
+  filename
+    .replace(/\.(png|svg|jpe?g)$/i, "")
+    .replace(/[-_()]/g, " ")
+    .trim();
+
+const toSponsorLogo = (path: string, mod: { default: ImageMetadata }) => ({
+  src: mod.default.src,
+  alt: getSponsorAlt(getSponsorFileName(path)),
+});
+
+const featuredSponsorFiles = [
+  "faces-light.png",
+  "MiniMax-white.png",
+  "kairos.svg",
+  "SoftServe—Logo—White.png",
+];
+
+const featuredSponsors = featuredSponsorFiles.flatMap((file) => {
+  const entry = Object.entries(sponsorImages).find(([path]) =>
+    path.endsWith(file),
+  );
+  if (!entry) return [];
+  return [toSponsorLogo(entry[0], entry[1])];
+});
+
+const otherSponsors = Object.entries(sponsorImages)
+  .filter(([path]) => !featuredSponsorFiles.some((file) => path.endsWith(file)))
+  .map(([path, mod]) => toSponsorLogo(path, mod))
+  .sort((a, b) => a.alt.localeCompare(b.alt));
+
+const sponsorLogos = featuredSponsors;
+
+const locationImages = [
+  { src: locationElSalvador.src, alt: "El Salvador" },
+  { src: location1779233228417.src, alt: "hack@latam location" },
+  { src: locationGuate.src, alt: "Guatemala" },
+  { src: locationIMG5201.src, alt: "hack@latam location" },
+  { src: locationIMG8898.src, alt: "hack@latam location" },
+  { src: locationWhatsApp2057.src, alt: "hack@latam location" },
+];
+
+const rightLocationImages = [
+  { src: locationWhatsApp2056.src, alt: "hack@latam location" },
+  { src: locationWhatsApp0515.src, alt: "hack@latam location" },
+];
+
+const communityLinks = [
+  { name: "ai /abs", href: "https://ailabs.sv/" },
+  {
+    name: "ai playgrounds",
+    href: "https://www.instagram.com/aiplaygroundstech/",
+  },
+  { name: "the 502 project", href: "https://www.the502project.com/" },
+  { name: "indies.la", href: "https://indies.la/" },
+  { name: "escuelita maker", href: "https://escuelitamaker.com/" },
+];
+
+const communityLink = (name: string) =>
+  communityLinks.find((link) => link.name === name)?.href;
+
+const judgeImages = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/judges/*.{png,jpeg,jpg}",
+  { eager: true },
+);
+
+const normalizeForMatch = (value: string) =>
+  value.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+
+const getJudgeImageSrc = (key: string) => {
+  const normalizedKey = normalizeForMatch(key);
+  const entry = Object.entries(judgeImages).find(([path]) =>
+    normalizeForMatch(path).includes(normalizedKey),
+  );
+  return entry?.[1].default.src ?? "";
+};
+
+const climateArt = `
+                  ⡀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠴⢋⡿⡇⢩⣡⢕⠑⠄⠏⡏⢛⠯⠐⡢⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢮⡏⠬⠀⠈⠀⠀⠀⠀⠀⠀⠀⠁⠈⠐⠩⠪⣵⣧⣂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⣂⣲⠇⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠷⢡⣂⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⢀⠷⡏⠁⠀⠀⠀⠀⡤⠀⠊⠈⠁⠉⠉⠙⠲⢂⠄⠀⠀⠀⠀⠀⠀⠅⠕⢵⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⡟⠍⠀⠀⠀⠀⠔⠀⠀⢀⣠⣤⡤⢀⠀⠀⠀⠈⠐⠆⡈⢆⠀⠀⠀⠐⠮⣮⡔⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⡜⢹⡹⠀⠀⠀⢀⠈⢰⡿⠋⠂⠈⠉⠙⠻⡺⠧⡀⠀⠀⠈⠄⠘⠄⠀⠀⠒⠨⠽⠥⠥⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⡊⠀⡿⣟⠀⠀⢀⠂⠀⣿⡅⠀⠀⠀⠀⠀⠀⠈⠂⢂⡯⠀⠀⠀⠑⠀⠈⠄⠀⠀⡂⠩⡥⢇⢁⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠙⣄⣿⣽⣤⣀⡉⠉⠀⠉⠀⢀⣟⡄⠀⠀⠀⠀⠉⡼⣝⠾⡀⠀⠉⠄⠐⠀⠀⠀⠚⡲⢍⢦⡀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠽⡛⡏⢭⡓⡒⡖⡋⣡⣿⠁⠅⠀⠀⠀⠀⠀⢺⢎⡂⡆⠀⠀⢃⠀⢑⠀⠀⠈⢐⠅⣉⠃⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢈⠀⠀⠀⠉⠘⠓⠲⠒⢛⢺⡇⠁⠀⠀⠀⠀⠀⠰⢓⠉⡅⠀⠀⠈⡂⠀⢁⠀⠀⢈⢂⡸⠇⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠉⠐⠐⣅⣀⠧⠠⠴⠊⠀⠀⠀⠀⠀⠀⠀⣐⡁⠀⣸⠃⠀⠀⠀⠆⠀⠀⡃⠀⠀⠄⠈⣯⣺⠁⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⢡⡻⡍⠤⠁⠀⠀⠀⠀⠀⢡⡐⠀⢘⠀⠀⡷⠁⠯⡈⠄⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⡠⠆⡣⣍⣀⠍⠤⠁⠀⠀⠀⠀⠀⢀⠇⠀⠀⠨⡠⠀⠙⠐⡀⣀⠀⠄⠀⠠⠀
+⠶⣢⢄⣀⡀⠀⠀⠀⢀⣠⡀⠒⣶⢥⠇⡰⢺⢊⣰⠀⡶⠉⠀⠀⠀⠀⢀⡠⠎⠀⠀⠀⠀⠀⠉⠀⠔⠀⠀⢴⡀⡍⣢⣔⣐⡐
+⠀⠀⠀⠉⠉⠊⠩⠶⠠⠎⠈⠭⠨⠀⠍⠌⠌⠸⠛⠓⠓⠒⠐⠒⠀⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠀⠘⠩⢩⠋⢱`;
+
+const defAccArt = `
+  ⠀⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⠀⠀⠀⠀⠀⠀⠀⠀⣠⣦⡀⠀⠀⠀
+⠀⠀⠛⣿⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⣿⠛⠀⠀⠀⠀⠀⡀⠺⣿⣿⠟⢀⡀⠀
+⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣦⠈⠁⣴⣿⣿⡦
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣦⡈⠻⠟⢁⣴⣦⡈⠻⠋⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⡀⠺⣿⣿⠟⢀⡀⠻⣿⡿⠋⠀⠀⠀
+⠀⣠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣶⡿⠿⣿⣦⡈⠁⣴⣿⣿⡦⠈⠀⠀⠀⠀⠀
+⠲⣿⠷⠂⠀⠀⠀⠀⠀⠀⢀⣴⡿⠋⣠⣦⡈⠻⣿⣦⡈⠻⠋⠀⠀⠀⠀⠀⠀⠀
+⠀⠈⠀⠀⠀⠀⠀⠀⠀⠰⣿⣿⡀⠺⣿⣿⣿⡦⠈⣻⣿⡦⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⣠⣦⡈⠻⣿⣦⡈⠻⠋⣠⣾⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⡀⠺⣿⣿⠟⢀⡈⠻⣿⣶⣾⡿⠋⣠⣦⡀⠀⢀⣠⣤⣀⡀⠀⠀
+⠀⠀⠀⠀⣠⣾⣿⣦⠈⠁⣴⣿⣿⡦⠈⠛⠋⠀⠀⠈⠛⢁⣴⣿⣿⡿⠋⠀⠀⠀
+⠀⠀⣠⣦⡈⠻⠟⢁⣴⣦⡈⠻⠋⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣏⠀⠀⠀⠀⠀
+⠀⠺⣿⣿⠟⢀⡀⠻⣿⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠰⣿⡿⠛⠁⠙⣷⣶⣦⠀⠀
+⠀⠀⠈⠁⣴⣿⣿⡦⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠋⠀⠀⠀⠀⠻⠿⠟⠀⠀
+⠀⠀⠀⠀⠈⠻⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`;
+
+const transparencyArt = `
+⠀⠀⠀⠀⠀⢀⣠⣴⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣤⠀⠀
+⠀⠀⠀⣶⠿⢿⡿⠿⠿⢿⡿⠿⣶⠀⠀⠀⠀⠀⠀⣀⣠⣤⣶⣾⣿⣿⣿⣿⠀⠀
+⠀⠀⠀⡇⠀⢸⡇⠀⠀⢸⡇⠀⣿⠀⣀⣤⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀
+⠀⠀⠀⣧⣀⣸⣇⣀⣀⣸⣇⣀⣿⠀⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀
+⠀⠀⠀⠛⠛⣛⣛⣛⣛⣛⣛⠛⠛⠀⠀⠀⠀⠉⠉⠛⠛⠻⠿⢿⣿⣿⣿⣿⠀⠀
+⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠛⠀⠀
+⠀⠀⠀⠀⣿⠛⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢰⣿⡀⣿⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⣸⣿⣿⣿⣿⣿⣿⣿⠉⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣠⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⡶⠟⠛⣧⣄⣀⡴⠛⠻⣦⣀⣴⠟⠀⠀
+⠀⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠀⠀⠀⠀⠉⠉⠀⠀⠀⠀⠉⠉⠀⠀⠀`;
+
+const winners = [
+  {
+    name: "ahora",
+    country: "peru",
+    track: "climate & environmental risks",
+    trackClass: "text-hack-green",
+    description: "monitoring and predicting landslides and floods",
+    what: "with a pilot done at cuenca del rímac where a landslide killed 178 and displaced 700k people without any previous alert",
+    art: climateArt,
+  },
+  {
+    name: "faro",
+    country: "argentina",
+    track: "transparency & corruption",
+    trackClass: "text-hack-orange",
+    description: "tracking public spending on infrastructure across borders",
+    what: "raising early flags to prevent cases such as odebrecht, one of the most infamous corruption cases in latam spanning 14 countries",
+    art: transparencyArt,
+  },
+  {
+    name: "debri net",
+    country: "chile",
+    track: "def/acc",
+    trackClass: "text-hack-blue",
+    description:
+      "detecting and predicting trajectories of invisible space debris using satellite networks",
+    what: "used the concept of wi-fi sensing and extrapolated it to communications between satellites to  detect space debris, estimate its orbit, and prevent impacts",
+    art: defAccArt,
+  },
+];
+
+const toolAwards = [
+  {
+    logo: mistralLogo,
+    logoAlt: "Mistral",
+    name: "mistral",
+    recipients: [
+      {
+        name: "sentinel",
+        country: "chile",
+        description:
+          "predicts and monitors fires, tornadoes, and glaciers, won 600 dollars in api credits from mistral",
+      },
+      {
+        name: "freddy hg",
+        country: "colombia",
+        description:
+          "monitors illegal gold mining in the amazon, won 600 dollars in api credits from mistral",
+      },
+    ],
+  },
+  {
+    logo: makeLogo,
+    logoAlt: "Make.com",
+    name: "make.com",
+    recipients: [
+      {
+        name: "koralio",
+        country: "el salvador",
+        description:
+          "monitors coral reefs in central america, won 1 year of make.com",
+      },
+    ],
+  },
+];
+
+const judges = [
+  {
+    name: "miguel paz",
+    title: "ceo @ reveniu",
+    desc: "board member at américa transparente, facilitating access to government data",
+    image: getJudgeImageSrc("miguel-paz"),
+  },
+  {
+    name: "raimundo manterola",
+    title: "cto @ watermind",
+    desc: "builds technology to monitor water bodies for climate change adaptation",
+    image: getJudgeImageSrc("raimundo-manterola"),
+  },
+  {
+    name: "antonio espinoza",
+    title: "innovation @ corporación opción",
+    desc: "leading development and innovation to protect children's rights",
+    image: getJudgeImageSrc("antonio-espinoza"),
+  },
+  {
+    name: "agustín covarrubias",
+    title: "co-director @ kairos",
+    desc: "discovering and financing the best ai safety and policy talent",
+    image: getJudgeImageSrc("covarrubias"),
+  },
+  {
+    name: "josé díaz",
+    title: "cto @ climadapt",
+    desc: "developing ai for nature at boquila, making a climate-resilient future at climadapt",
+    image: getJudgeImageSrc("jose-diaz"),
+  },
+  {
+    name: "cristóbal dotte",
+    title: "managing partner @ emisso",
+    desc: "acquired founder, now building a software factory powered by ai agents",
+    image: getJudgeImageSrc("cristobal-dotte"),
+  },
+  {
+    name: "gianfranco piana",
+    title: "engineer @ antiwork",
+    desc: "building software so anyone can sell digital and physical products on the internet",
+    image: getJudgeImageSrc("gianfranco-piana"),
+  },
+];
+
+const organizers = [
+  {
+    name: "ai playgrounds",
+    location: "utec ventures and universidad de ingeniería y tecnología (UTEC)",
+  },
+  {
+    name: "ai /abs",
+    location: "universidad francisco gavidia (UFG)",
+  },
+  {
+    name: "the 502 project",
+    location: "universidad francisco marroquín (UFM)",
+  },
+  {
+    name: "indies.la",
+    location: "universidad del desarrollo (UDD)",
+  },
+  {
+    name: "escuelita maker",
+    location: "living lab",
+  },
+];
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>hack@latam</title>
+  </head>
+  <body
+    class="font-sans bg-hack-black text-hack-gray min-h-screen overflow-x-clip text-pretty"
+  >
+    <main class="min-w-0 p-4 text-sm/loose">
+      <div
+        class="mx-auto mb-6 grid w-full max-w-md grid-cols-4 items-center gap-4"
+        aria-label="Sponsors"
+      >
+        {
+          sponsorLogos.map((logo) => (
+            <img
+              src={logo.src}
+              alt={logo.alt}
+              class="mx-auto h-12 w-full object-contain brightness-0 invert opacity-50 md:h-14"
+              loading="eager"
+            />
+          ))
+        }
+      </div>
+      <section class="max-w-md mx-auto">
+        <h1 class="font-display text-5xl text-white">hack@latam</h1>
+        <div class="space-y-4 text-balance pb-4">
+          <p>the largest hackathon for social good in LATAM is over</p>
+          <p>
+            it brought together 87 teams from around the world to tackle some of
+            latin america's most urgent challenges
+          </p>
+          <p>
+            in just 54 hours, we saw hardware builds, moonshots, viral projects,
+            and teams surpass 10,000 signups before the event even ended
+          </p>
+          <p>
+            top universities opened their doors to host across mexico, peru,
+            chile, guatemala, and el salvador
+          </p>
+        </div>
+      </section>
+      <section
+        aria-label="hack@latam locations"
+        class="flex min-w-0 w-full flex-col gap-2 md:h-96 md:grid md:grid-cols-[1fr_1fr_2fr] md:gap-2"
+      >
+        <div
+          class="grid h-96 min-h-0 min-w-0 w-full grid-rows-2 gap-2 md:h-full"
+        >
+          {
+            rightLocationImages.map((image) => (
+              <div class="min-h-0 min-w-0 overflow-hidden">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  class="size-full object-cover object-center"
+                  loading="lazy"
+                />
+              </div>
+            ))
+          }
+        </div>
+        <div class="min-h-0 min-w-0 overflow-hidden md:h-full">
+          <video
+            class="aspect-3/4 h-96 w-full object-cover md:aspect-auto md:h-full md:w-full"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            poster={locationMoviePoster.src}
+          >
+            <source src={locationMovieMp4} type="video/mp4" />
+          </video>
+        </div>
+        <div
+          class="grid h-96 min-h-0 min-w-0 grid-cols-3 grid-rows-2 gap-2 md:h-full"
+        >
+          {
+            locationImages.map((image) => (
+              <div class="min-h-0 min-w-0 overflow-hidden">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  class="size-full object-cover object-center"
+                  loading="lazy"
+                />
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section aria-label="Winners" class="mt-6 w-full">
+        <h2 class="mx-auto max-w-md">so who won?</h2>
+        <p class="text-balance mx-auto max-w-md mt-4">
+          it was no easy task to pick winners from all the amazing projects, but
+          our judges did a great job
+        </p>
+        <ul class="mt-4 grid gap-8 md:grid-cols-3 max-w-7xl mx-auto">
+          {
+            winners.map((winner) => (
+              <li class="min-w-0 border-t border-hack-gray/20 pt-6 md:border-t-0 md:pt-0">
+                <div class="flex h-32 items-center justify-center overflow-hidden text-center sm:h-[10.4rem] md:h-[5.2rem] lg:h-[7.2rem] xl:h-[9.6rem]">
+                  <pre
+                    class={`${winner.trackClass} inline-block whitespace-pre text-left font-mono text-[0.5rem] leading-none brightness-125 sm:text-[0.65rem] md:text-[0.32rem] lg:text-[0.45rem] xl:text-[0.6rem]`}
+                    aria-hidden="true"
+                  >
+                    {winner.art}
+                  </pre>
+                </div>
+                <div class="mt-3 -space-y-1">
+                  <p class="text-white font-display uppercase">{winner.name}</p>
+                  <p class={winner.trackClass}>{winner.track}</p>
+                  <p class="leading-normal">{winner.description}</p>
+                  <p class="leading-normal mt-4">{winner.what}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section
+        aria-label="Special awards and winning teams"
+        class="mx-auto mt-6 max-w-md space-y-6 text-balance"
+      >
+        <p>
+          each got 2,000 dollars and direct interviews with the residency and
+          antigravity capital
+        </p>
+
+        <div class="space-y-4">
+          <p>special awards for outstanding usage of sponsors' tools</p>
+          {
+            toolAwards.map((award) => (
+              <ul class="space-y-3">
+                {award.recipients.map((recipient) => (
+                  <li>
+                    <span class="text-white font-display uppercase mr-0.5">
+                      {recipient.name}
+                      {"  "}
+                    </span>
+                    {"  "}
+                    from {recipient.country} {recipient.description}
+                  </li>
+                ))}
+              </ul>
+            ))
+          }
+        </div>
+
+        <p>building in public made for some of the most memorable moments</p>
+
+        <p>
+          <span class="text-white font-display uppercase mr-0.5">
+            sabuezo
+            {"  "}
+          </span> making cybersecurity accessible to SMBs accross latam went viral
+          on instagram, x and tiktok. reaching 80,000 people <a
+            href="https://www.instagram.com/p/DYtMDAUtflA/"
+            target="_blank"
+            rel="noreferrer"
+            class="text-white underline underline-offset-2">on instagram</a
+          >
+          alone
+        </p>
+
+        <p>
+          <span class="text-white font-display uppercase mr-0.5">
+            debri net
+            {"  "}
+          </span>
+          quite literally built in public with a foldable desk and 2 laptops, from
+          dawn to dusk until public security was called on them because they looked
+          so sketchy
+        </p>
+      </section>
+
+      <article
+        class="mx-auto mt-6 max-w-md border border-hack-gray/50 px-4 pb-4"
+      >
+        <div class="flex items-center gap-2 py-4">
+          <div class="bg-orange-500 rounded-full">
+            <img
+              src="https://media.licdn.com/dms/image/v2/D5603AQGzRN8SRs7PXQ/profile-displayphoto-crop_800_800/B56ZomxR8DH8AI-/0/1761587045878?e=1781136000&v=beta&t=46PhLBUJGqgFk-Ncxoaabxp_W_cj81-yvqS7r04oeLE"
+              alt=""
+              class="w-10 h-10 rounded-full grayscale opacity-90"
+            />
+          </div>
+          <div class="text-sm">
+            <p>nicolás quintana</p>
+            <p>def/acc winner</p>
+          </div>
+        </div>
+        <div class="space-y-4 text-balance">
+          <p>they called security on us…</p>
+          <p>last weekend, my friends and i participated in hack@latam</p>
+          <p>
+            naturally, them being what my dad nicknamed "rocket friends", we
+            decided to go for a moonshot, literally: space debris
+          </p>
+          <p>
+            a large-scale problem that we barely think about, it threatens to
+            wipe out our entire satellite infrastructure if we keep accumulating
+            debris
+          </p>
+          <p>
+            its main challenge is locating it and predicting its trajectory,
+            something we currently do using very expensive ground-based radars
+          </p>
+          <p>
+            we developed debri net, a system that allows us to detect pieces of
+            space debris from small fluctuations in communications between
+            satellites
+          </p>
+          <p>
+            applied to large networks like nasa's iridium constellation, it has
+            the potential to detect thousands of fragments per day
+          </p>
+        </div>
+        <div class="bg-orange-500">
+          <img
+            src={debriNetBuilding.src}
+            alt="Nicolás Quintana working on debri net outdoors with two laptops on a sidewalk"
+            class="mx-auto mt-4 block w-full grayscale opacity-90"
+            loading="lazy"
+          />
+        </div>
+      </article>
+
+      <p class="mx-auto mt-6 max-w-md">and, who were our judges?</p>
+      <p class="text-balance mx-auto max-w-md mt-4">
+        chosen for their ability to evaluate the projects based on their
+        potential to make a positive impact on the world
+      </p>
+
+      <section aria-label="Judges" class="mx-auto mt-6 max-w-7xl">
+        <ul class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+          {
+            judges.map((judge) => (
+              <li class="min-w-0 space-y-2">
+                <p class="font-display uppercase text-white">{judge.name}</p>
+                <p>{judge.title}</p>
+                <div class="bg-orange-500">
+                  <img
+                    src={judge.image}
+                    alt={judge.name}
+                    class="aspect-square w-full object-cover grayscale opacity-90"
+                    loading="lazy"
+                  />
+                </div>
+                <p class="leading-normal">{judge.desc}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <div class="mx-auto mt-6 max-w-md space-y-1 text-balance">
+        <p>huge thanks to organizers,</p>
+        {
+          organizers.map((organizer) => (
+            <p>
+              <a
+                href={communityLink(organizer.name)}
+                class="text-white underline underline-offset-2"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {organizer.name}
+              </a>{" "}
+              at {organizer.location}
+            </p>
+          ))
+        }
+      </div>
+
+      <section aria-label="Sponsors" class="mx-auto mt-6 max-w-md">
+        <p class="mb-4">it wouldn't have been possible without our sponsors</p>
+        <div class="grid grid-cols-2 items-center gap-4">
+          {
+            featuredSponsors.map((logo) => (
+              <img
+                src={logo.src}
+                alt={logo.alt}
+                class="mx-auto h-16 w-full object-contain md:h-24"
+                loading="lazy"
+              />
+            ))
+          }
+        </div>
+        <div class="mt-4 grid grid-cols-4 items-center gap-4">
+          {
+            otherSponsors.map((logo) => (
+              <img
+                src={logo.src}
+                alt={logo.alt}
+                class="mx-auto h-12 w-full object-contain md:h-14"
+                loading="lazy"
+              />
+            ))
+          }
+        </div>
+      </section>
+    </main>
+
+    <section aria-label="Background video" class="mt-6 w-full">
+      <video
+        class="w-full block"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+      >
+        <source src={backgroundVideo} type="video/mp4" />
+      </video>
+    </section>
+  </body>
 </html>
